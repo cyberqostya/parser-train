@@ -1,7 +1,7 @@
 const loginData = {
   login: 'какой-то логин',
   password: 'какой-то пароль',
-  parsingUrl: 'https://www.avito.ru/sankt-peterburg/sport_i_otdyh/nastolnye_igry-ASgBAgICAUTKAoZP?cd=1&q=root',
+  parsingUrl: 'https://www.avito.ru/sankt-peterburg/koshki/poroda-meyn-kun-ASgBAgICAUSoA5IV',
   loginUrl: 'https://www.avito.ru/#login?authsrc=h',
 }
 
