@@ -1,24 +1,34 @@
-const helpers = require('./helpers');
-const login = require('./login');
+import { convertDate } from './helpers.js';
+import { loginData } from './login.js';
 
-async function scraper(browser){
+interface Ads {
+  title?: string,
+  description: string,
+  url?: string,
+  price?: number,
+  author: string,
+  date: string,
+  phone: string
+}
+
+export async function pageScraper(browser): Promise<Ads[]> {
   let page = await browser.newPage();
-  console.log(`Перехожу на страницу ${login.loginData.parsingUrl}...`);
-  await page.goto(login.loginData.parsingUrl, {
+  console.log(`Перехожу на страницу ${loginData.parsingUrl}...`);
+  await page.goto(loginData.parsingUrl, {
     waitUntil: 'load',
     timeout: 0,
   });
 
   // Первый парсинг с разводящей страницы
   // Построен основной костяк выдачи результатов
-  const data = await page.evaluate(() => {
-    const ads = [];
+  const data = await page.evaluate((): Ads[] => {
+    const ads: Ads[] = [];
     document.querySelectorAll('[data-marker="item"]').forEach(i => {
       ads.push({
         title: i.querySelector('[itemprop="name"]').textContent,
         description: '',
         url: 'https://www.avito.ru' + i.querySelector('[itemprop="url"]').getAttribute('href'),
-        price: i.querySelector('[itemprop="price"]') ? Number(i.querySelector('[itemprop="price"]').getAttribute('content')) : 'Данные не указаны',
+        price: i.querySelector('[itemprop="price"]') ? Number(i.querySelector('[itemprop="price"]').getAttribute('content')) : NaN,
         author: '', // i.querySelector('[class*="iva-item-userInfoStep"] [class*="style-title"]').textContent,
         date: '',
         phone: ''
@@ -36,8 +46,13 @@ async function scraper(browser){
       timeout: 0,
     });
 
-    const additionalProps = await newPage.evaluate(() => {
-      const additionalProps = {};
+    const additionalProps = await newPage.evaluate((): Ads => {
+      const additionalProps: Ads = {
+        description: '',
+        author: '',
+        date: '',
+        phone: ''
+      };
 
       const phone = document.querySelector('[class*="button-textBox"] [class*="text-text"]');
       const description = document.querySelector('[itemprop="description"] p');
@@ -74,11 +89,9 @@ async function scraper(browser){
 
   for (let i = 0; i < data.length; i++) {
     const additionalProps = await getFullData(data[i]);
-    additionalProps.date = helpers.convertDate(additionalProps.date); // Преобразование строк (Сегодня в 18:30 или Вчера в 10:00 или 23 марта в 3:14) в формат ISO-8601
+    additionalProps.date = convertDate(additionalProps.date); // Преобразование строк (Сегодня в 18:30 или Вчера в 10:00 или 23 марта в 3:14) в формат ISO-8601
     data[i] = { ...data[i], ...additionalProps }
   }
 
   return data;
 }
-
-module.exports = scraper;

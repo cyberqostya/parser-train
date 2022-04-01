@@ -1,5 +1,5 @@
-const startBrowser = require('./browser');
-const pageController = require('./pageController');
+import { startBrowser } from './browser.js';
+import pageController from './pageController.js';
 
 // Запуск экземпляра браузера
 let browserInstance = startBrowser();

@@ -1,11 +1,11 @@
-const loginData = {
+export const loginData: { [prop: string]: string } = {
   login: 'какой-то логин',
   password: 'какой-то пароль',
   parsingUrl: 'https://www.avito.ru/sankt-peterburg/koshki/poroda-meyn-kun-ASgBAgICAUSoA5IV',
   loginUrl: 'https://www.avito.ru/#login?authsrc=h',
 }
 
-async function login(browser) {
+export async function login(browser):Promise<void> {
   let page = await browser.newPage();
 
   console.log(`Перехожу на страницу ${loginData.loginUrl}...`);
@@ -21,9 +21,4 @@ async function login(browser) {
   await page.click('[class*="auth-form-auth-form__submit"] button[type="submit"]');
   await new Promise(resolve => setTimeout(resolve, 5000));
 
-}
-
-module.exports = {
-  loginData,
-  login
 }

@@ -1,12 +1,12 @@
-const pageScraper = require('./pageScraper');
-const login = require('./login');
-const fs = require('fs');
+import { pageScraper } from './pageScraper.js';
+import { login } from './login.js';
+import fs from 'fs';
 
 async function pageController(browserInstance){
 	let browser;
 	try{
 		browser = await browserInstance;
-    // await login.login(browser); Попытка залогиниться
+    // await login(browser); Попытка залогиниться
 		const scrapedData = await pageScraper(browser);	
 		await browser.close();
     
@@ -21,4 +21,4 @@ async function pageController(browserInstance){
 	}
 }
 
-module.exports = (browserInstance) => pageController(browserInstance)
+export default pageController;
